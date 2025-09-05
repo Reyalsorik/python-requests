@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "python-requests"
+version = "1.0.0"
+description = "Handle HTTP requests."
+authors = ["Ryan Holt <ryanwholt@hotmail.com>"]
+readme = "README.md"
+packages = [{include = "custom_requests"}]
+
+[tool.poetry.dependencies]
+python = "^3.13"
+setuptools = "^80.9.0"
+python-retry-decorator = {git = "https://github.com/reyalsorik/python-retry-decorator"}
+requests = "^2.32.5"
+
+[tool.poetry.group.tests.dependencies]
+pytest = "^8.4.2"
+pytest-cov = "^6.2.1"
+
+[tool.poetry.group.tools.dependencies]
+flake8 = "^7.3.0"
+isort = "^6.0.1"
+mypy = "^1.4.1"
+pydocstyle = "^6.3.0"
+tox = "^4.6.4"
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
