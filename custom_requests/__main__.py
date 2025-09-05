@@ -21,7 +21,7 @@ class Response(object):
         self.request = request
 
     @property
-    def url(self) -> dict:
+    def url(self) -> str:
         """Get the url."""
         return self.request.url
 
@@ -73,11 +73,12 @@ class Request(requests.Session):
         self.timeout = (10, 15)
         self.allowed_status_codes = (200,)
 
-    def _request(self, method: str, url: str, data: dict, headers: dict, auth: tuple, allow_redirects: bool, timeout: tuple, status_codes: tuple = tuple()) -> Response:
+    def _request(self, method: str, url: str, data: dict = None, json: dict = None, headers: dict = None, auth: tuple = tuple(), allow_redirects: bool = True, timeout: tuple = tuple(), status_codes: tuple = tuple()) -> Response:
         """Make a request.
 
         :param url: url
         :param data: data to send
+        :param json: json data to send
         :param headers: headers to include
         :param auth: http basic authentication username and password
         :param allow_redirects: follow redirects
@@ -86,7 +87,8 @@ class Request(requests.Session):
         """
         request = getattr(super(), method)(
             url=url,
-            data=data or None,
+            data=data,
+            json=json,
             headers=headers or self.request_headers,
             auth=auth,
             allow_redirects=allow_redirects,
@@ -119,7 +121,6 @@ class Request(requests.Session):
             self._request(
                 method="get",
                 url=url,
-                data=dict(),
                 headers=headers or dict(),
                 auth=auth,
                 allow_redirects=allow_redirects,
@@ -129,23 +130,25 @@ class Request(requests.Session):
         )
 
     @Retry(jitter=True)
-    def post(self, url: str, data: dict = None, headers: dict = None, auth: tuple = tuple(), allow_redirects: bool = True, timeout: tuple = tuple(), status_codes: tuple = tuple()) -> Response:
+    def post(self, url: str, data: dict = None, json: dict = None, headers: dict = None, auth: tuple = tuple(), allow_redirects: bool = True, timeout: tuple = tuple(), status_codes: tuple = tuple()) -> Response:
         """Make a POST request.
 
         :param url: url to post data
         :param data: data to post
+        :param json: json data to post
         :param headers: headers to include
         :param auth: http basic authentication username and password
         :param allow_redirects: follow redirects
         :param timeout: connect timeout, read timeout
         :param status_codes: allowed status codes; "*" allows all
         """
-        self.logger.debug(f"Making a POST request to '{url}' with the data '{data}' and headers '{headers}'.")
+        self.logger.debug(f"Making a POST request to '{url}' with the data '{data}', json '{json}' and headers '{headers}'.")
         return Response(
             self._request(
                 method="post",
                 url=url,
-                data=data or dict(),
+                data=data,
+                json=json,
                 headers=headers or dict(),
                 auth=auth,
                 allow_redirects=allow_redirects,
@@ -170,7 +173,6 @@ class Request(requests.Session):
             self._request(
                 method="head",
                 url=url,
-                data=dict(),
                 headers=headers or dict(),
                 auth=auth,
                 allow_redirects=allow_redirects,
@@ -180,23 +182,25 @@ class Request(requests.Session):
         )
 
     @Retry(jitter=True)
-    def patch(self, url: str, data: dict = None, headers: dict = None, auth: tuple = tuple(), allow_redirects: bool = True, timeout: tuple = tuple(), status_codes: tuple = tuple()) -> Response:
+    def patch(self, url: str, data: dict = None, json: dict = None, headers: dict = None, auth: tuple = tuple(), allow_redirects: bool = True, timeout: tuple = tuple(), status_codes: tuple = tuple()) -> Response:
         """Make a PATCH request.
 
         :param url: url to patch data
         :param data: data to patch
+        :param json: json data to patch
         :param headers: headers to include
         :param auth: http basic authentication username and password
         :param allow_redirects: follow redirects
         :param timeout: connect timeout, read timeout
         :param status_codes: allowed status codes; "*" allows all
         """
-        self.logger.debug(f"Making a PATCH request to '{url}' with the headers '{headers}' and auth '{auth}'.")
+        self.logger.debug(f"Making a PATCH request to '{url}' with the data '{data}', json '{json}' and headers '{headers}'.")
         return Response(
             self._request(
                 method="patch",
                 url=url,
-                data=data or dict(),
+                data=data,
+                json=json,
                 headers=headers or dict(),
                 auth=auth,
                 allow_redirects=allow_redirects,
